@@ -24,7 +24,7 @@ def get_pk_info(gpg) -> List[str]:
 def validate_gpg_signature(warrant_text) -> bool:
   gpg = gnupg.GPG(gnupghome="keys")
   fingerprints = get_pk_info(gpg)
-  v = gpg.verify(warrant_text)
+  v = gpg.verify(warrant_text.encode("utf-8"))
 
   return any(v.fingerprint == fingerprint for fingerprint in fingerprints)
 
@@ -59,7 +59,7 @@ def extract_headlines(warrant_text):
 def main():
   print_info(Colours.BLUE, "Fetching warrant canary...")
   
-  warrant_text = requests.get("https://caphillauto.zone/warrant.txt",
+  warrant_text = requests.get("https://caphillauto.zone/canary.txt",
     headers={ "User-Agent": HTTP_USER_AGENT }
   ).text
   gpg_valid = validate_gpg_signature(warrant_text)
